@@ -1,0 +1,205 @@
+  <note>MaxDiff Indices Template --Start--</note>
+    <exec when="init">
+def setupMaxDiffFile(fname, fileDelimiter="\t"):
+    try:
+        f = open("%s/%s" % (gv.survey.path, fname))
+        mdObj = [ line.strip("\r\n").split(fileDelimiter) for line in f.readlines() ]
+        d = dict( ("v%s_t%s" % (row[0], row[1]), row[2:]) for row in mdObj )
+    except IOError:
+        d = {}
+    return d
+
+def setupMaxDiffItemsI(d, vt, question):
+    item_index = dict( (r.o.label.strip("item"), r.index) for r in question.rows )
+
+    items = d[vt]
+
+    for r in question.rows:
+        if r.o.label.strip("item") not in items:
+            r.disabled = True
+
+    question.rows.order = [ item_index[i] for i in items ]
+
+    print "*****STAFF ONLY*****"
+    print "Version_Task: %s" % vt
+    for i in range(len(items)):
+        print "Item %s: %s" % (i+1,items[i])
+    </exec>
+    
+    <exec when="init">Q1_md = setupMaxDiffFile("md_design.dat")</exec>
+    
+    <quota label="Q1_quota" overquota="noqual" sheet="Q1_Maxdiff"/>
+    
+    <number label="Q1_Version" size="3" optional="1" verify="range(1,16)" where="execute">
+      <title>Q1 - MaxDiff Version</title>
+      <exec>
+print p.markers
+for x in p.markers:
+    if "/Q1_Maxdiff/ver_" in x:
+        Q1_Version.val = int(x.split("_")[-1])
+        break
+      </exec>
+    </number>
+    <suspend/>
+    
+    <exec>p.startTime = timeSpent()</exec>
+    
+    <loop label="Q1_md_loop" vars="task" randomizeChildren="0">
+      <title>Q1 - MaxDiff Loop</title>
+      <block label="Q1_md_block" randomize="1">
+        <radio label="Q1_[loopvar: task]" adim="cols" grouping="cols" shuffle="rows" unique="1" ss:questionClassNames="Q1_maxdiff">
+          <title>Title update [MDcount]</title>
+          <comment>Select one</comment>
+          <exec>
+setupMaxDiffItemsI( Q1_md, "v%d_t%d" % (Q1_Version.val, [loopvar: task]), Q1_[loopvar: task])
+p.MDcount = str(Q1_md_loop_expanded.order.index([loopvar: task]-1)+1)
+          </exec>
+          <col label="best">Most Important</col>
+          <col label="worst">Least Important</col>
+    <row label="item1">Item 1</row>
+    <row label="item2">Item 2</row>
+    <row label="item3">Item 3</row>
+    <row label="item4">Item 4</row>
+    <row label="item5">Item 5</row>
+    <row label="item6">Item 6</row>
+    <row label="item7">Item 7</row>
+    <row label="item8">Item 8</row>
+    <row label="item9">Item 9</row>
+    <row label="item10">Item 10</row>
+    <row label="item11">Item 11</row>
+    <row label="item12">Item 12</row>
+    <row label="item13">Item 13</row>
+    <row label="item14">Item 14</row>
+    <row label="item15">Item 15</row>         
+<style name="question.header" mode="before">
+            <![CDATA[
+    <style type="text/css">
+    .Q1_maxdiff tr.maxdiff-header-legend {
+        background-color: transparent;
+        border-bottom: 2px solid #d9d9d9;
+    }
+    .Q1_maxdiff tr.maxdiff-header-legend th.legend {
+        background-color: transparent;
+        border: none;
+    }
+    .Q1_maxdiff tr.maxdiff-row td.element {
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-bottom: 1px solid #d9d9d9;
+        text-align: center;
+    }
+    .Q1_maxdiff tr.maxdiff-row th.row-legend {
+        background-color: transparent;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        border-bottom: 1px solid #d9d9d9;
+        text-align: center;
+    }
+    </style>
+            ]]>
+</style>
+ 
+<style name="question.top-legend">
+            <![CDATA[
+\@if ec.simpleList
+    $(legends)
+\@else
+    <$(tag) class="maxdiff-header-legend row row-col-legends row-col-legends-top ${"mobile-top-row-legend " if mobileOnly else ""}${"GtTenColumns " if ec.colCount > 10 else ""}colCount-$(colCount)">
+        ${"%s%s" % (legends.split("</th>")[0],"</th>")}
+       $(left)
+        ${"%s%s" % (legends.split("</th>")[1],"</th>")}
+    </$(tag)>
+    \@if not simple
+  </tbody>
+  <tbody>
+    \@endif
+\@endif
+            ]]>
+</style>
+ 
+<style name="question.row">
+            <![CDATA[
+\@if ec.simpleList
+    $(elements)
+\@else
+    <$(tag) class="maxdiff-row row row-elements $(style) colCount-$(colCount)">
+        ${"%s%s" % (elements.split("</td>")[0],"</td>")}
+        $(left)
+        ${"%s%s" % (elements.split("</td>")[1],"</td>")}
+    </$(tag)>
+\@endif
+            ]]>
+</style>
+        </radio>
+      </block>
+      
+      <looprow label="1">
+        <loopvar name="task">1</loopvar>
+      </looprow>
+      
+      <looprow label="2">
+        <loopvar name="task">2</loopvar>
+      </looprow>
+      
+      <looprow label="3">
+        <loopvar name="task">3</loopvar>
+      </looprow>
+      
+      <looprow label="4">
+        <loopvar name="task">4</loopvar>
+      </looprow>
+      
+      <looprow label="5">
+        <loopvar name="task">5</loopvar>
+      </looprow>
+      
+      <looprow label="6">
+        <loopvar name="task">6</loopvar>
+      </looprow>
+      
+      <looprow label="7">
+        <loopvar name="task">7</loopvar>
+      </looprow>
+      
+      <looprow label="8">
+        <loopvar name="task">8</loopvar>
+      </looprow>
+      
+      <looprow label="9">
+        <loopvar name="task">9</loopvar>
+      </looprow>
+      
+      <looprow label="10">
+        <loopvar name="task">10</loopvar>
+      </looprow>
+      
+      <looprow label="11">
+        <loopvar name="task">11</loopvar>
+      </looprow>
+      
+      <looprow label="12">
+        <loopvar name="task">12</loopvar>
+      </looprow>
+      
+      <looprow label="13">
+        <loopvar name="task">13</loopvar>
+      </looprow>
+      
+      <looprow label="14">
+        <loopvar name="task">14</loopvar>
+      </looprow>
+      
+      <looprow label="15">
+        <loopvar name="task">15</loopvar>
+      </looprow>
+    
+    </loop>
+    
+    <float label="Q1_Timer" size="15" where="execute">
+      <title>Q1 - MaxDiff Timer (Minutes)</title>
+      <exec>Q1_Timer.val = (timeSpent() - p.startTime) / 60.0</exec>
+    </float>
+    
+    <note>MaxDiff Indices Template --End--</note>
